@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SrcConfig(AppConfig):
+class NoticiasConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'src'
+    name = 'noticias'  # Atualize aqui
