@@ -6,42 +6,44 @@ Este repositório contém a base inicial para o desenvolvimento do Case Backend 
 
 Desenvolver uma API para a gestão de notícias, com suporte a diferentes perfis de usuários, autenticação JWT, agendamento de publicações e controle de acesso com base em planos contratados (JOTA Info e JOTA PRO). O sistema deve ser eficiente e escalável, utilizando processamento assíncrono para tarefas de longa duração.
 
-## Estratégia Inicial
-
-Antes da implementação, o foco está em garantir um planejamento sólido e aderente aos seguintes princípios:
-
-- **Simplicidade e Clareza**: Priorizando a entrega de soluções com arquiteturas simples, bem documentadas e com código legível.
-- **Boas Práticas**: Estruturação do projeto visando escalabilidade, testabilidade e manutenibilidade.
-- **Explicação das Decisões**: Cada escolha técnica será documentada e explicada com base em trade-offs, alinhada aos objetivos do case.
-
-## Tecnologias e Ferramentas Propostas
+## Tecnologias Utilizadas
 
 - **Linguagem**: Python 3.12+
-- **Framework**: Django + Django REST Framework
+- **Framework**: Django 5.2 + Django REST Framework
 - **Banco de Dados**: PostgreSQL
 - **Autenticação**: JWT (com djangorestframework-simplejwt)
-- **Processamento Assíncrono**: Celery + Redis
-- **Documentação da API**: Swagger (drf-yasg)
+- **Processamento Assíncrono**: Celery + Redis (planejado)
+- **Documentação da API**: Swagger (drf-yasg) (planejado)
 - **Containerização**: Docker + Docker Compose
-- **CI/CD**: GitHub Actions
 - **Testes**: Pytest + coverage
+- **Outras Dependências**: Pillow para manipulação de imagens
 
-## Estrutura Inicial (Planejada)
+## Estrutura do Projeto
 
 ```bash
-jota/
+JOTA/
 ├── manage.py
-├── jota/                      # Configurações globais do projeto
+├── JOTA/                      # Configurações globais do projeto
 │   ├── __init__.py
+│   ├── asgi.py
 │   ├── settings.py
 │   ├── urls.py
-│   └── wsgi.py
-├── noticias/                  # App responsável por CRUD de notícias
-├── usuarios/                  # App responsável por autenticação e perfis
-├── categorias/                # App opcional para verticalização das notícias
-├── templates/ (se necessário)
-├── static/ (se necessário)
-└── README.md
+│   ├── wsgi.py
+├── editor/                  # App responsável por CRUD de notícias 
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
+│   └── migrations/
+├── requirements.txt           # Dependências do projeto
+├── docker-compose.yml         # Configuração do Docker Compose
+├── .env                       # Variáveis de ambiente (não versionado)
+├── .env.exemple               # Exemplo de variáveis de ambiente
+└── README.md                  # Documentação do projeto
 ```
 
 ## Configuração do Ambiente
@@ -75,14 +77,14 @@ jota/
 
 4. **Configure as variáveis de ambiente**:
    ```bash
-   cp .env.example .env
+   cp .env.exemple .env
    ```
-   - Edite o arquivo `.env` se necessário para personalizar as configurações:
-   ```
-   POSTGRES_PASSWORD=sua_senha
-   POSTGRES_USER=seu_usuario
-   POSTGRES_DB=seu_banco
-   ```
+   - Edite o arquivo `.env` para personalizar as configurações:
+     ```
+     POSTGRES_PASSWORD=sua_senha
+     POSTGRES_USER=seu_usuario
+     POSTGRES_DB=seu_banco
+     ```
 
 ### Usando Docker
 
@@ -90,19 +92,15 @@ jota/
    ```bash
    docker-compose up -d
    ```
-   
-   **Nota**: Se você tiver o PostgreSQL instalado localmente, pode haver um conflito de porta. Nesse caso, temos duas opções:
-   - Parar o serviço PostgreSQL local: `sudo systemctl stop postgresql`
-   - Ou usar uma porta diferente no `docker-compose.yml` (já configurado para usar a porta 5433)
 
 2. **Acesse o Adminer**:
    - Abra o navegador e acesse `http://localhost:8080`
    - Dados de conexão:
      - Sistema: PostgreSQL
      - Servidor: db
-     - Usuário: definido em `.env` (padrão: admin)
-     - Senha: definida em `.env` (padrão: 1234)
-     - Base de dados: definida em `.env` (padrão: admin)
+     - Usuário: definido em `.env`
+     - Senha: definida em `.env`
+     - Base de dados: definida em `.env`
 
 ### Configuração do Django
 
@@ -123,12 +121,53 @@ jota/
 
 4. **Acesse a aplicação**:
    - Interface administrativa: `http://localhost:8000/admin/`
-   - API (quando implementada): `http://localhost:8000/api/`
+   - API: `http://localhost:8000/api/`
+
+## Endpoints da API
+
+### Notícias
+
+- **Listar e Criar Notícias**:
+  - **GET** `/api/news/`
+  - **POST** `/api/news/`
+  - Campos esperados no POST:
+    ```json
+    {
+      "titulo": "string",
+      "subtitulo": "string",
+      "conteudo": "string",
+      "data_de_publicacao": "YYYY-MM-DD",
+      "autor": "string",
+      "status": "draft|published",
+      "categoria": "poder|tributos|saude|energia|trabalhista",
+      "acesso": "public|pro",
+      "imagem": "file"
+    }
+    ```
+
+- **Detalhar e Excluir Notícia**:
+  - **GET** `/api/news/<id>/`
+  - **DELETE** `/api/news/<id>/`
+
+## Testes
+
+Para executar os testes, utilize o comando:
+```bash
+python JOTA/manage.py test
+```
 
 ## Próximos Passos
 
 - ✅ Configuração inicial do ambiente com Django + PostgreSQL.
-- Definição da arquitetura modular por domínio (apps isolados).
-- Estruturação da autenticação JWT e perfis de acesso.
-- Início da implementação dos endpoints de notícias.
+- ✅ Implementação do CRUD de notícias.
+- 🔲 Adicionar autenticação JWT.
+- 🔲 Implementar controle de acesso baseado em planos.
+- 🔲 Configurar Swagger para documentação da API.
+- 🔲 Adicionar processamento assíncrono com Celery e Redis.
+- 🔲 Melhorar cobertura de testes com Pytest.
+
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT.
 

@@ -21,7 +21,7 @@ class News(models.Model):
 
     titulo = models.CharField(max_length=100)
     subtitulo = models.CharField(max_length=100)
-    imagem = models.ImageField(upload_to='news_images/')
+    imagem = models.ImageField(upload_to='news_images/',null=True)
     conteudo = models.TextField()
     data_de_publicacao = models.DateField()
     autor = models.CharField(max_length=100)
