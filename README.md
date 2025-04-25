@@ -39,6 +39,14 @@ JOTA/
 │   ├── urls.py
 │   ├── views.py
 │   └── migrations/
+├── user/                    # App responsável por autenticação e registro
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
 ├── requirements.txt           # Dependências do projeto
 ├── docker-compose.yml         # Configuração do Docker Compose
 ├── .env                       # Variáveis de ambiente (não versionado)
@@ -125,6 +133,51 @@ JOTA/
 
 ## Endpoints da API
 
+### Autenticação
+
+- **Registro de Usuário/Autor**:
+  - **POST** `/register/`
+  - Corpo da requisição:
+    ```json
+    {
+      "username": "seu_username",
+      "password": "sua_senha",
+      "email": "seu_email"
+    }
+    ```
+
+- **Login (JWT)**:
+  - **POST** `/author/login/`
+  - Corpo da requisição:
+    ```json
+    {
+      "username": "seu_username",
+      "password": "sua_senha"
+    }
+    ```
+  - Resposta:
+    ```json
+    {
+      "refresh": "token_de_refresh",
+      "access": "token_de_acesso"
+    }
+    ```
+
+- **Renovação do Token**:
+  - **POST** `/author/token/refresh/`
+  - Corpo da requisição:
+    ```json
+    {
+      "refresh": "token_de_refresh"
+    }
+    ```
+  - Resposta:
+    ```json
+    {
+      "access": "novo_token_de_acesso"
+    }
+    ```
+
 ### Notícias
 
 - **Listar e Criar Notícias**:
@@ -137,7 +190,6 @@ JOTA/
       "subtitulo": "string",
       "conteudo": "string",
       "data_de_publicacao": "YYYY-MM-DD",
-      "autor": "string",
       "status": "draft|published",
       "categoria": "poder|tributos|saude|energia|trabalhista",
       "acesso": "public|pro",
@@ -148,6 +200,18 @@ JOTA/
 - **Detalhar e Excluir Notícia**:
   - **GET** `/api/news/<id>/`
   - **DELETE** `/api/news/<id>/`
+
+- **Atualizar Notícia**:
+  - **PATCH** `/api/news/update/<id>/`
+  - Campos esperados no PATCH:
+    ```json
+    {
+      "titulo": "string",
+      "subtitulo": "string",
+      "conteudo": "string",
+      "imagem": "file"
+    }
+    ```
 
 ## Testes
 
@@ -160,12 +224,11 @@ python JOTA/manage.py test
 
 - ✅ Configuração inicial do ambiente com Django + PostgreSQL.
 - ✅ Implementação do CRUD de notícias.
-- 🔲 Adicionar autenticação JWT.
+- ✅ Adicionar autenticação JWT.
 - 🔲 Implementar controle de acesso baseado em planos.
 - 🔲 Configurar Swagger para documentação da API.
 - 🔲 Adicionar processamento assíncrono com Celery e Redis.
 - 🔲 Melhorar cobertura de testes com Pytest.
-
 
 ## Licença
 

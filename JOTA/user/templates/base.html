@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOTA</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'user/css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>JOTA</h1>
+        </div>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 JOTA</p>
+        </div>
+    </footer>
+</body>
+</html>
