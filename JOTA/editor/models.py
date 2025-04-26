@@ -7,6 +7,8 @@ class AuthorProfile(models.Model):
 
     def __str__(self):
         return self.nome_do_autor
+    def __str__(self):
+        return self.nome_do_autor
 
 class News(models.Model):
     STATUS_CHOICES = [

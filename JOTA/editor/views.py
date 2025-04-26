@@ -1,24 +1,23 @@
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
-from .permissions import IsAuthor
+from .permissions import IsAuthor, IsRegisteredAuthor
 
 from .models import News
 from .serializers import NewsSerializers
 
 class NewsList(generics.ListCreateAPIView):
     serializer_class = NewsSerializers
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsRegisteredAuthor]  # Adiciona a permissão personalizada
 
     def get_queryset(self):
         # Retorna apenas as notícias do autor autenticado
-        return News.objects.filter(autor_auth__user=self.request.user)
+        return News.objects.filter(autor=self.request.user)
 
     def perform_create(self, serializer):
         # Associa a notícia ao autor autenticado
-        autor_auth = self.request.user.autor_auth
-        serializer.save(autor_auth=autor_auth)
-
+        serializer.save(autor=self.request.user)
+        
 class Newsdetail(generics.RetrieveDestroyAPIView):
     serializer_class = NewsSerializers
     queryset = News.objects.all()

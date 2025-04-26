@@ -13,10 +13,16 @@ Desenvolver uma API para a gestão de notícias, com suporte a diferentes perfis
 - **Banco de Dados**: PostgreSQL
 - **Autenticação**: JWT (com djangorestframework-simplejwt)
 - **Processamento Assíncrono**: Celery + Redis (planejado)
-- **Documentação da API**: Swagger (drf-yasg) (planejado)
+- **Documentação da API**: Swagger (drf-yasg)
 - **Containerização**: Docker + Docker Compose
 - **Testes**: Pytest + coverage
 - **Outras Dependências**: Pillow para manipulação de imagens
+
+## Demonstração
+
+Abaixo está uma captura de tela do Swagger, que documenta os endpoints da API de forma interativa:
+
+![Demonstração do Swagger](demonstration/demo.png)
 
 ## Estrutura do Projeto
 

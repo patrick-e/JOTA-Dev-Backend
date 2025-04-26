@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jornal Digital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        header {
+            background-color: #1a365d;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: #f7b733;
+        }
+
+        .nav-container {
+            width: 100%;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+        }
+
+        nav ul li a:hover {
+            color: #f7b733;
+        }
+
+        .search-bar {
+            display: flex;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            width: 80%;
+            border: none;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .search-bar button {
+            background-color: #f7b733;
+            border: none;
+            padding: 10px 15px;
+            color: #1a365d;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 0 3px 3px 0;
+            width: 20%;
+        }
+
+        .breaking-news {
+            background-color: #ff4b4b;
+            color: white;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        .breaking-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .breaking-title {
+            background-color: #1a365d;
+            padding: 5px 10px;
+            margin-right: 15px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .breaking-news-ticker {
+            overflow: hidden;
+            position: relative;
+            height: 30px;
+            width: 100%;
+        }
+
+        .news-ticker-content {
+            position: absolute;
+            white-space: nowrap;
+            animation: ticker 20s linear infinite;
+            width: 100%;
+            text-overflow: ellipsis;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin: 30px auto;
+        }
+
+        .main-news article {
+            margin-bottom: 30px;
+        }
+
+        .headline {
+            position: relative;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .headline img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .headline-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            width: 100%;
+        }
+
+        .headline-content h2 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .headline-content p {
+            color: #eeeeee;
+            font-size: 16px;
+        }
+
+        .category {
+            display: inline-block;
+            background-color: #f7b733;
+            color: #1a365d;
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #1a365d;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f7b733;
+            margin-bottom: 20px;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .news-item {
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+        .news-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .news-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .news-content {
+            padding: 15px;
+        }
+
+        .news-content h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #1a365d;
+        }
+
+        .news-content p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+            font-size: 12px;
+        }
+
+        .sidebar {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .popular-posts {
+            margin-bottom: 30px;
+        }
+
+        .popular-post {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .popular-post:last-child {
+            border-bottom: none;
+        }
+
+        .popular-post img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .popular-content {
+            padding-left: 15px;
+            flex-grow: 1;
+        }
+
+        .popular-content h4 {
+            font-size: 16px;
+            color: #1a365d;
+            margin-bottom: 5px;
+        }
+
+        .popular-content p {
+            color: #777;
+            font-size: 12px;
+        }
+
+        .newsletter {
+            background-color: #f0f7ff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .newsletter p {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .newsletter-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .newsletter-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1a365d;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .newsletter-form button:hover {
+            background-color: #15294d;
+        }
+
+        footer {
+            background-color: #1a365d;
+            color: white;
+            padding: 50px 0 20px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-section h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #f7b733;
+        }
+
+        .footer-section p, .footer-section ul li {
+            color: #ddd;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: #f7b733;
+        }
+
+        .social-icons {
+            display: flex;
+            margin-top: 15px;
+        }
+
+        .social-icons a {
+            display: block;
+            width: 35px;
+            height: 35px;
+            background-color: rgba(255,255,255,0.1);
+            margin-right: 10px;
+            text-align: center;
+            line-height: 35px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .social-icons a:hover {
+            background-color: #f7b733;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1024px) {
+            .news-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header-top {
+                flex-direction: column;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 15px;
+            }
+
+            nav ul li {
+                margin: 5px 10px;
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">Jornal<span>Digital</span></div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Buscar notícias...">
+                    <button>Buscar</button>
+                </div>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="#">Início</a></li>
+                        <li><a href="#">Política</a></li>
+                        <li><a href="#">Economia</a></li>
+                        <li><a href="#">Esportes</a></li>
+                        <li><a href="#">Cultura</a></li>
+                        <li><a href="#">Tecnologia</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="breaking-news">
+        <div class="container breaking-container">
+            <div class="breaking-title">ÚLTIMA HORA</div>
+            <div class="breaking-news-ticker">
+                <div class="news-ticker-content">
+                    Novas medidas econômicas são anunciadas pelo governo | Seleção brasileira se prepara para eliminatórias da Copa | Avanço tecnológico promete revolucionar setor de energia renovável
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <main>
+            <div class="main-news">
+                <article class="headline">
+                    <img src="/api/placeholder/800/400" alt="Notícia principal">
+                    <div class="headline-content">
+                        <span class="category">Destaque</span>
+                        <h2>Avanços na pesquisa contra o câncer trazem esperança para milhões</h2>
+                        <p>Nova descoberta de cientistas brasileiros pode mudar o tratamento da doença nos próximos anos</p>
+                    </div>
+                </article>
+
+                <h2 class="section-title">Notícias Recentes</h2>
+                <div class="news-grid">
+                    <div class="news-item">
+                        <img src="/api/placeholder/400/200" alt="Notícia de política">
+                        <div class="news-content">
+                            <span class="category">Política</span>
+                            <h3>Congresso aprova nova legislação ambiental</h3>
+                            <p>Novas regras visam proteger áreas de preservação e aumentar punições para crimes ambientais</p>
+                            <div class="news-meta">
+                                <span>Por Maria Silva</span>
+                                <span>há 2 horas</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="news-item">
+                        <img src="/api/placeholder/400/200" alt="Notícia de economia">
+                        <div class="news-content">
+                            <span class="category">Economia</span>
+                            <h3>Bolsa atinge maior patamar dos últimos três anos</h3>
+                            <p>Investidores reagem positivamente após anúncio de novas medidas fiscais</p>
+                            <div class="news-meta">
+                                <span>Por João Oliveira</span>
+                                <span>há 3 horas</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="news-item">
+                        <img src="/api/placeholder/400/200" alt="Notícia de esportes">
+                        <div class="news-content">
+                            <span class="category">Esportes</span>
+                            <h3>Brasil conquista medalhas no campeonato mundial de atletismo</h3>
+                            <p>Atletas brasileiros sobem ao pódio em três modalidades diferentes</p>
+                            <div class="news-meta">
+                                <span>Por Carlos Mendes</span>
+                                <span>há 5 horas</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="news-item">
+                        <img src="/api/placeholder/400/200" alt="Notícia de tecnologia">
+                        <div class="news-content">
+                            <span class="category">Tecnologia</span>
+                            <h3>Nova inteligência artificial promete revolucionar diagnósticos médicos</h3>
+                            <p>Sistema desenvolvido por startup brasileira tem precisão superior a 95%</p>
+                            <div class="news-meta">
+                                <span>Por Ana Rodrigues</span>
+                                <span>há 6 horas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="popular-posts">
+                    <h2 class="section-title">Mais Lidas</h2>
+                    
+                    <div class="popular-post">
+                        <img src="/api/placeholder/80/80" alt="Notícia popular 1">
+                        <div class="popular-content">
+                            <h4>Descoberta surpreendente sobre alimentação e longevidade</h4>
+                            <p>Publicado há 1 dia - 243 comentários</p>
+                        </div>
+                    </div>
+                    
+                    <div class="popular-post">
+                        <img src="/api/placeholder/80/80" alt="Notícia popular 2">
+                        <div class="popular-content">
+                            <h4>Crise hídrica preocupa especialistas</h4>
+                            <p>Publicado há 2 dias - 187 comentários</p>
+                        </div>
+                    </div>
+                    
+                    <div class="popular-post">
+                        <img src="/api/placeholder/80/80" alt="Notícia popular 3">
+                        <div class="popular-content">
+                            <h4>Novo fenômeno nas redes sociais mobiliza jovens</h4>
+                            <p>Publicado há 3 dias - 156 comentários</p>
+                        </div>
+                    </div>
+                    
+                    <div class="popular-post">
+                        <img src="/api/placeholder/80/80" alt="Notícia popular 4">
+                        <div class="popular-content">
+                            <h4>Transporte público passará por modernização</h4>
+                            <p>Publicado há 3 dias - 124 comentários</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="newsletter">
+                    <h2 class="section-title">Newsletter</h2>
+                    <p>Receba as principais notícias diretamente no seu e-mail</p>
+                    <form class="newsletter-form">
+                        <input type="text" placeholder="Nome">
+                        <input type="email" placeholder="E-mail">
+                        <button type="submit">Inscrever-se</button>
+                    </form>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-section">
+                    <h3>Sobre nós</h3>
+                    <p>O Jornal Digital é um veículo de comunicação comprometido com a verdade e a qualidade da informação. Nossa missão é levar notícias relevantes e verificadas aos leitores.</p>
+                    <div class="social-icons">
+                        <a href="#">F</a>
+                        <a href="#">T</a>
+                        <a href="#">I</a>
+                        <a href="#">Y</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Categorias</h3>
+                    <ul>
+                        <li><a href="#">Política</a></li>
+                        <li><a href="#">Economia</a></li>
+                        <li><a href="#">Esportes</a></li>
+                        <li><a href="#">Cultura</a></li>
+                        <li><a href="#">Tecnologia</a></li>
+                        <li><a href="#">Internacional</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Links Úteis</h3>
+                    <ul>
+                        <li><a href="#">Expediente</a></li>
+                        <li><a href="#">Termos de uso</a></li>
+                        <li><a href="#">Política de privacidade</a></li>
+                        <li><a href="#">Anuncie conosco</a></li>
+                        <li><a href="#">Trabalhe conosco</a></li>
+                        <li><a href="#">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p>Av. Principal, 1000 - Centro</p>
+                    <p>CEP: 00000-000 - São Paulo/SP</p>
+                    <p>Telefone: (11) 1234-5678</p>
+                    <p>Email: contato@jornaldigital.com.br</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>© 2025 Jornal Digital - Todos os direitos reservados</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
