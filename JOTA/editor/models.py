@@ -2,13 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class AuthorProfile(models.Model):
+    ROLE_CHOICES = [
+        ("Admin", "Admin"),
+        ("Editor", "Editor"),
+        ("Leitor", "Leitor"),
+    ]
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="author_profile")
     nome_do_autor = models.CharField(max_length=300)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="Leitor")
 
     def __str__(self):
-        return self.nome_do_autor
-    def __str__(self):
-        return self.nome_do_autor
+        return f"{self.nome_do_autor} ({self.role})"
 
 class News(models.Model):
     STATUS_CHOICES = [
