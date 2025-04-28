@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
+      - develop
 
 jobs:
   test:
@@ -14,7 +16,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:13
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -27,6 +29,11 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
+      redis:
+        image: redis:6
+        ports:
+          - 6379:6379
+
     steps:
       # Checkout do código
       - name: Checkout code
@@ -36,7 +43,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.12
+          python-version: 3.12  # Atualizado para Django 5.2
 
       # Instalação de dependências
       - name: Install dependencies
@@ -56,5 +63,15 @@ jobs:
 
       # Execução dos testes
       - name: Run tests
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+          DJANGO_SETTINGS_MODULE: JOTA.settings
+          SECRET_KEY: test-key
         run: |
-          python JOTA/manage.py test
+          python JOTA/manage.py test editor
+          python JOTA/manage.py test user
+
+      # Verificação de linting
+      - name: Run linting
+        run: |
+          flake8 JOTA --count --max-line-length=127 --statistics

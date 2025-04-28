@@ -34,7 +34,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: '3.12'  # Atualizado para uma versão compatível com Django 5.2
 
     - name: Install dependencies
       run: |
@@ -52,7 +52,8 @@ jobs:
         DJANGO_SETTINGS_MODULE: JOTA.settings
         SECRET_KEY: test-key
       run: |
-        python manage.py test
+        python JOTA/manage.py test editor
+        python JOTA/manage.py test user
         
   build:
     needs: test

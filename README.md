@@ -55,6 +55,21 @@ JOTA/
     └── permissions.py       # Classes de permissão
 ```
 
+## Configuração do Ambiente
+
+1. Clone o repositório
+2. Crie um ambiente virtual: `python -m venv venv`
+3. Ative o ambiente virtual: 
+   - Windows: `venv\Scripts\activate`
+   - Linux/Mac: `source venv/bin/activate`
+4. Instale as dependências: `pip install -r requirements.txt`
+5. Configure as variáveis de ambiente (copie `.env.exemple` para `.env`) ou utilize o comando 
+`cp .env.exemple .env`
+6. ativação do docker-compose `docker-compose up -d`
+7. Execute as migrações: `python manage.py migrate`
+8. Crie um superusuário: `python manage.py createsuperuser`
+9. Execute o servidor: `python manage.py runserver`
+
 ## Endpoints da API
 
 ### Autenticação (`/api/v1/auth/`)
@@ -148,18 +163,6 @@ JOTA/
   - Análises por autor (15 min)
   - Métricas de visualização (5 min)
 
-## Configuração do Ambiente
-
-1. Clone o repositório
-2. Crie um ambiente virtual: `python -m venv venv`
-3. Ative o ambiente virtual: 
-   - Windows: `venv\Scripts\activate`
-   - Linux/Mac: `source venv/bin/activate`
-4. Instale as dependências: `pip install -r requirements.txt`
-5. Configure as variáveis de ambiente (copie `.env.exemple` para `.env`)
-6. Execute as migrações: `python manage.py migrate`
-7. Crie um superusuário: `python manage.py createsuperuser`
-8. Execute o servidor: `python manage.py runserver`
 
 ## Testes
 
