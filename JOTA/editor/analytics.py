@@ -1,6 +1,5 @@
 from datetime import datetime
 from pymongo import MongoClient
-from django.conf import settings
 from django.dispatch import receiver
 from .events import news_published, NewsPublishedEvent
 
@@ -21,8 +20,6 @@ class NewsAnalytics:
             'user_id': user_id,
             'access_type': access_type,
             'timestamp': datetime.now(),
-            'user_agent': None,  # Poderia ser capturado da request
-            'ip_address': None,  # Poderia ser capturado da request
         }
         self.access_logs.insert_one(log)
 
