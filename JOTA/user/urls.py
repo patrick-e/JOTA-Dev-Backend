@@ -9,7 +9,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='token_obtain_pair'),
     path('refresh/', RefreshTokenView.as_view(), name='token_refresh'),
     path('register/', RegisterView.as_view(), name='register'),
-    
+
     # User management endpoints
     path('profile/', UserManagementView.as_view(), name='user_profile'),
 ]

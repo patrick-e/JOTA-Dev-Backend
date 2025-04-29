@@ -89,7 +89,7 @@ class RegisterView(generics.CreateAPIView):
             response_data = {
                 "user": UserDetailSerializer(user).data
             }
-            
+
             # Sempre gera tokens para o novo usuário
             if not tokens:
                 tokens = AuthService.generate_tokens(user)

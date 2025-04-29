@@ -38,12 +38,12 @@ class NewsService:
                             # Usuário PRO pode ver conteúdo público e PRO nas categorias permitidas
                             print("\nDEBUG - Usuário PRO:")
                             print(f"Verticais permitidas: {user.client_plan.allowed_verticals}")
-                            
+
                             queryset = News.objects.filter(
                                 models.Q(acesso="public", status="published") |
                                 models.Q(acesso="pro", status="published", categoria__in=user.client_plan.allowed_verticals)
                             )
-                            
+
                             print(f"Total de notícias encontradas: {queryset.count()}")
                             print("Query SQL:", queryset.query)
                             print("Notícias PRO encontradas:")

@@ -4,7 +4,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from django_filters import rest_framework as django_filters
-from django.core.paginator import Paginator  # Adicione esta importação
 from ..models import News
 from ..serializers import NewsSerializers
 from ..services import NewsService

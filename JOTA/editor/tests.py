@@ -45,11 +45,11 @@ class NewsTests(APITestCase):
             is_pro=True,
             allowed_verticals=['poder', 'tributos']
         )
-        
+
         # Forçar refresh do plano
         client_plan.refresh_from_db()
         print(f"Plano criado: is_pro={client_plan.is_pro}, verticais={client_plan.allowed_verticals}")
-        
+
         # Forçar refresh do usuário para garantir que o plano está associado
         self.pro_user.refresh_from_db()
 
@@ -95,19 +95,18 @@ class NewsTests(APITestCase):
         if hasattr(self.pro_user, 'client_plan'):
             print(f"Plano PRO ativo: {self.pro_user.client_plan.is_pro}")
             print(f"Verticais permitidas: {self.pro_user.client_plan.allowed_verticals}")
-        
-        # Garantir que existe uma notícia PRO na categoria permitida ao usuário
+
         pro_news = News.objects.create(
             titulo="Notícia PRO",
             subtitulo="Subtítulo PRO",
-            conteudo="Conteúdo de teste para notícia PRO" * 10, # garantir que tem mais de 50 caracteres
+            conteudo="Conteúdo de teste para notícia PRO" * 10,
             data_de_publicacao=datetime.now().date(),
             autor=self.editor_user,
             status="published",  # Explicitamente definido como published
             categoria="poder",  # categoria permitida para o usuário PRO
             acesso="pro"
         )
-        
+
         # Forçar refresh do objeto para garantir que foi salvo corretamente
         pro_news.refresh_from_db()
         print("\nDEBUG - Notícia PRO criada:")
@@ -116,10 +115,10 @@ class NewsTests(APITestCase):
         print(f"Categoria: {pro_news.categoria}")
         print(f"Status: {pro_news.status}")
         print(f"Acesso: {pro_news.acesso}")
-        
+
         response = self.client.get(reverse('editor:news-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         print("\nDEBUG - Resposta da API:")
         print(f"Total de notícias na resposta: {len(response.data)}")
         print("Notícias na resposta:")
@@ -128,7 +127,7 @@ class NewsTests(APITestCase):
             print(f"  Categoria: {news['categoria']}")
             print(f"  Acesso: {news['acesso']}")
             print(f"  Status: {news['status']}")
-        
+
         # Verificar se existe pelo menos uma notícia com acesso PRO na resposta
         pro_news_in_response = any(n['acesso'] == 'pro' for n in response.data)
         self.assertTrue(pro_news_in_response, "Usuário PRO não conseguiu acessar notícia PRO")

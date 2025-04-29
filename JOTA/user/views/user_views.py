@@ -18,11 +18,11 @@ class IsAdminOrSelf(permissions.BasePermission):
 class UserManagementView(generics.GenericAPIView):
     """
     View para gerenciar usuários
-    
+
     get:
     - Se usuário for admin: Lista todos os usuários
     - Se usuário comum: Retorna próprio perfil
-    
+
     patch:
     - Se usuário for admin: Pode atualizar qualquer usuário
     - Se usuário comum: Pode atualizar apenas próprio perfil
@@ -40,7 +40,7 @@ class UserManagementView(generics.GenericAPIView):
             users = self.get_queryset()
             serializer = self.get_serializer(users, many=True)
             return Response(serializer.data)
-        
+
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
