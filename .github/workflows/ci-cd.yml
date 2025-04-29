@@ -17,7 +17,7 @@ jobs:
           POSTGRES_USER: admin
           POSTGRES_DB: admin
         ports:
-          - 5433:5432
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -48,6 +48,10 @@ jobs:
         pip install -r requirements.txt
         pip install flake8 pytest pytest-django coverage
 
+    - name: Set up project structure
+      run: |
+        mkdir -p JOTA/static
+
     - name: Run linting
       run: |
         flake8 JOTA --count --max-line-length=127 --statistics
@@ -56,14 +60,14 @@ jobs:
       run: |
         echo "Verificando conexão com o PostgreSQL..."
         for i in {1..10}; do
-          if pg_isready -h 127.0.0.1 -p 5433; then
+          if pg_isready -h 127.0.0.1 -p 5432; then
             echo "PostgreSQL está pronto!"
             break
           fi
           echo "Aguardando PostgreSQL (tentativa $i)..."
           sleep 5
         done
-        if ! pg_isready -h 127.0.0.1 -p 5433; then
+        if ! pg_isready -h 127.0.0.1 -p 5432; then
           echo "PostgreSQL não está acessível após várias tentativas."
           exit 1
         fi
@@ -75,13 +79,13 @@ jobs:
 
     - name: Log PostgreSQL databases
       run: |
-        psql -h 127.0.0.1 -p 5433 -U admin -c "\l"
+        psql -h 127.0.0.1 -p 5432 -U admin -c "\l"
       env:
         PGPASSWORD: 1234
 
     - name: Run tests
       env:
-        DATABASE_URL: postgres://admin:1234@127.0.0.1:5433/admin
+        DATABASE_URL: postgres://admin:1234@127.0.0.1:5432/admin
         DJANGO_SETTINGS_MODULE: JOTA.settings
         SECRET_KEY: test-key
       run: |

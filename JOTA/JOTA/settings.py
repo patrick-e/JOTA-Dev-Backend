@@ -89,7 +89,7 @@ DATABASES = {
         "USER": os.getenv("POSTGRES_USER", "admin"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "1234"),
         "HOST": "127.0.0.1",
-        "PORT": "5433",  # Certifique-se de que esta é a porta correta
+        "PORT": "5432",  # Alterado de 5433 para 5432 no ambiente CI
     }
 }
 
@@ -129,9 +129,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATICFILES_DIRS = []
+
+# Adiciona o diretório static se existir
+static_dir = os.path.join(BASE_DIR, 'static')
+if os.path.isdir(static_dir):
+    STATICFILES_DIRS.append(static_dir)
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Configuração para servir arquivos estáticos dos apps

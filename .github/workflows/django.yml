@@ -18,13 +18,13 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: 1234
+          POSTGRES_DB: admin
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U postgres"
+          --health-cmd="pg_isready -U admin"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -51,12 +51,36 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Criar diretório estático
+      - name: Set up project structure
+        run: |
+          mkdir -p JOTA/static
+
+      # Verificar conexão do PostgreSQL
+      - name: Check PostgreSQL connection
+        run: |
+          echo "Verificando conexão com o PostgreSQL..."
+          for i in {1..10}; do
+            if pg_isready -h localhost -p 5432 -U admin; then
+              echo "PostgreSQL está pronto!"
+              break
+            fi
+            echo "Aguardando PostgreSQL (tentativa $i)..."
+            sleep 5
+          done
+          if ! pg_isready -h localhost -p 5432 -U admin; then
+            echo "PostgreSQL não está acessível após várias tentativas."
+            exit 1
+          fi
+        env:
+          PGPASSWORD: 1234
+
       # Configuração do banco de dados
       - name: Set up database
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: 1234
+          POSTGRES_DB: admin
         run: |
           python JOTA/manage.py makemigrations
           python JOTA/manage.py migrate
@@ -64,7 +88,7 @@ jobs:
       # Execução dos testes
       - name: Run tests
         env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+          DATABASE_URL: postgres://admin:1234@localhost:5432/admin
           DJANGO_SETTINGS_MODULE: JOTA.settings
           SECRET_KEY: test-key
         run: |
