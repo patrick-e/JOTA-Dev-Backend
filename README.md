@@ -70,6 +70,12 @@ JOTA/
 8. Crie um superusuário: `python manage.py createsuperuser`
 9. Execute o servidor: `python manage.py runserver`
 
+## Documentação Swagger
+
+Abaixo está uma demonstração da interface do Swagger para a API:
+
+![Demonstração do Swagger](demonstration/demo.png)
+
 ## Endpoints da API
 
 ### Autenticação (`/api/v1/auth/`)
