@@ -22,6 +22,7 @@ class UserTests(APITestCase):
         self.register_url = reverse('user:register')
         self.login_url = reverse('user:token_obtain_pair')
         self.refresh_url = reverse('user:token_refresh')
+        self.profile_url = reverse('user:user_profile')
 
     def test_register_user(self):
         """Teste para registrar um novo usuário"""
@@ -93,7 +94,7 @@ class UserTests(APITestCase):
             "email": "updateduser@example.com",
             "password": "Updated@1234"
         }
-        response = self.client.patch(reverse('user:register'), update_data, format='json')
+        response = self.client.patch(self.profile_url, update_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.user.refresh_from_db()
         self.assertEqual(self.user.email, "updateduser@example.com")
@@ -101,12 +102,13 @@ class UserTests(APITestCase):
     def test_admin_can_view_all_users(self):
         """Teste para verificar se o admin pode visualizar todos os usuários"""
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.get(reverse('user:register'))
+        response = self.client.get(self.profile_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(response.data), 2)  # Admin e usuário comum
 
     def test_user_cannot_access_admin_endpoints(self):
-        """Teste para verificar se um usuário comum não pode acessar endpoints de admin"""
+        """Teste para verificar se um usuário comum pode visualizar apenas seu próprio perfil"""
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(reverse('user:register'))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        response = self.client.get(self.profile_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['username'], self.user.username)

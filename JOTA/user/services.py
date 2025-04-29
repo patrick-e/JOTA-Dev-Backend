@@ -61,12 +61,12 @@ class AuthService:
             password=data['password']
         )
 
-        tokens = None
+        # Gera tokens para todos os usuários
+        tokens = AuthService.generate_tokens(user)
+
         try:
             # Verifica se é um autor autorizado
-            author_profile = AuthorProfile.objects.get(user=user)
-            if author_profile.role in ["Admin", "Editor"]:
-                tokens = AuthService.generate_tokens(user)
+            AuthorProfile.objects.get(user=user)
         except AuthorProfile.DoesNotExist:
             # Cria um plano básico para o usuário
             ClientPlan.objects.create(

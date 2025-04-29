@@ -1,16 +1,20 @@
 from datetime import datetime
 from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
 from django.dispatch import receiver
 from .events import news_published, NewsPublishedEvent
 
 
 class NewsAnalytics:
     def __init__(self):
-        # Conecta ao MongoDB
-        self.client = MongoClient('mongodb://localhost:27017/')
-        self.db = self.client['jota_analytics']
-        self.news_metrics = self.db['news_metrics']
-        self.access_logs = self.db['access_logs']
+        try:
+            self.client = MongoClient('mongodb://localhost:27017/', serverSelectionTimeoutMS=5000)
+            self.db = self.client['jota_analytics']
+            self.news_metrics = self.db['news_metrics']
+            self.access_logs = self.db['access_logs']
+        except ServerSelectionTimeoutError:
+            print("Erro: Não foi possível conectar ao MongoDB.")
+            self.client = None
 
     def log_news_access(self, news_id: int, user_id: int, access_type: str):
         """

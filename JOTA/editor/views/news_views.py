@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from django_filters import rest_framework as django_filters
+from django.core.paginator import Paginator  # Adicione esta importação
 from ..models import News
 from ..serializers import NewsSerializers
 from ..services import NewsService
@@ -45,7 +46,8 @@ class NewsList(generics.ListCreateAPIView):
     def get_queryset(self):
         page = self.request.query_params.get('page', 1)
         try:
-            return NewsService.get_news_queryset(self.request.user, page=int(page))
+            result = NewsService.get_news_queryset(self.request.user, page=int(page))
+            return result['page']  # Retorna a página já paginada do serviço
         except ValueError:
             raise ValidationError("Número de página inválido")
 
@@ -53,10 +55,12 @@ class NewsList(generics.ListCreateAPIView):
         if not (IsAdmin().has_permission(self.request, self) or
                 IsEditor().has_permission(self.request, self)):
             raise ValidationError("Apenas administradores e editores podem criar notícias")
-        try:
-            NewsService.create_news(serializer.validated_data, self.request.user)
-        except ValidationError as e:
-            raise ValidationError(str(e))
+        serializer.save()
+
+    def list(self, request, *args, **kwargs):
+        page_obj = self.get_queryset()  # Já retorna a página paginada do serviço
+        serializer = self.get_serializer(page_obj, many=True)
+        return Response(serializer.data)
 
 
 class NewsDetail(generics.RetrieveDestroyAPIView):
@@ -75,7 +79,8 @@ class NewsDetail(generics.RetrieveDestroyAPIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_queryset(self):
-        return NewsService.get_news_queryset(self.request.user)
+        result = NewsService.get_news_queryset(self.request.user)
+        return result['queryset']  # Retorna o QuerySet completo
 
     def retrieve(self, request, *args, **kwargs):
         try:
@@ -114,9 +119,17 @@ class NewsUpdate(generics.RetrieveUpdateAPIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_queryset(self):
-        if IsAdmin().has_permission(self.request, self):
-            return News.objects.all()
-        return News.objects.filter(autor=self.request.user)
+        # Retorna todos os objetos para evitar 404, a permissão será checada em update
+        return News.objects.all()
+
+    def check_object_permissions(self, request, obj):
+        if not (IsAdmin().has_permission(request, self) or
+                (IsEditor().has_permission(request, self) and obj.autor == request.user)):
+            self.permission_denied(
+                request,
+                message="Você não tem permissão para editar esta notícia"
+            )
+        return super().check_object_permissions(request, obj)
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

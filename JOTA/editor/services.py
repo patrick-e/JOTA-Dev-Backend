@@ -33,24 +33,47 @@ class NewsService:
                     elif user.author_profile.role == "Editor":
                         queryset = News.objects.filter(autor=user)
                     else:
-                        queryset = News.objects.filter(acesso="public", status="published")
-                elif hasattr(user, 'client_plan') and user.client_plan.is_pro:
-                    queryset = News.objects.filter(
-                        models.Q(acesso="public") |
-                        models.Q(acesso="pro", categoria__in=user.client_plan.allowed_verticals)
-                    ).filter(status="published")
+                        # Usuário normal
+                        if hasattr(user, 'client_plan') and user.client_plan.is_pro:
+                            # Usuário PRO pode ver conteúdo público e PRO nas categorias permitidas
+                            print("\nDEBUG - Usuário PRO:")
+                            print(f"Verticais permitidas: {user.client_plan.allowed_verticals}")
+                            
+                            queryset = News.objects.filter(
+                                models.Q(acesso="public", status="published") |
+                                models.Q(acesso="pro", status="published", categoria__in=user.client_plan.allowed_verticals)
+                            )
+                            
+                            print(f"Total de notícias encontradas: {queryset.count()}")
+                            print("Query SQL:", queryset.query)
+                            print("Notícias PRO encontradas:")
+                            for news in queryset.filter(acesso="pro"):
+                                print(f"- {news.titulo} (Categoria: {news.categoria}, Status: {news.status})")
+                        else:
+                            # Usuário comum só vê conteúdo público
+                            queryset = News.objects.filter(acesso="public", status="published")
                 else:
-                    queryset = News.objects.filter(acesso="public", status="published")
+                    # Sem perfil de autor
+                    if hasattr(user, 'client_plan') and user.client_plan.is_pro:
+                        # Usuário PRO pode ver conteúdo público e PRO nas categorias permitidas
+                        queryset = News.objects.filter(
+                            models.Q(acesso="public", status="published") |
+                            models.Q(acesso="pro", status="published", categoria__in=user.client_plan.allowed_verticals)
+                        )
+                    else:
+                        # Usuário comum só vê conteúdo público
+                        queryset = News.objects.filter(acesso="public", status="published")
             except AttributeError:
+                # Fallback para erro de atributo
                 queryset = News.objects.filter(acesso="public", status="published")
 
-        # Aplica paginação
+        queryset = queryset.order_by('-data_de_publicacao')  # Ordena por data de publicação
         paginator = Paginator(queryset, NewsService.PAGE_SIZE)
         result = paginator.get_page(page)
 
         # Armazena em cache
-        cache.set(cache_key, result, NewsService.CACHE_TTL)
-        return result
+        cache.set(cache_key, {'queryset': queryset, 'page': result}, NewsService.CACHE_TTL)
+        return {'queryset': queryset, 'page': result}
 
     @staticmethod
     def create_news(data, author):

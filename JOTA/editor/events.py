@@ -34,26 +34,26 @@ class NewsScheduledEvent(NewsEvent):
 # Handlers dos eventos
 @receiver(post_save, sender=News)
 def handle_news_save(sender, instance, created, **kwargs):
-    """Handler para mudanças no status da notícia"""
-    if not created and instance.status == 'published':
-        # Emite evento de publicação
-        event = NewsPublishedEvent(
-            news_id=instance.id,
-            timestamp=datetime.now(),
-            actor_id=instance.autor.id,
-            previous_status='draft'
-        )
-        news_published.send(sender=sender, event=event)
+    try:
+        if not created and instance.status == 'published':
+            event = NewsPublishedEvent(
+                news_id=instance.id,
+                timestamp=datetime.now(),
+                actor_id=instance.autor.id,
+                previous_status='draft'
+            )
+            news_published.send(sender=sender, event=event)
 
-    # Verifica se é um agendamento
-    if instance.data_de_publicacao > datetime.now().date():
-        event = NewsScheduledEvent(
-            news_id=instance.id,
-            timestamp=datetime.now(),
-            actor_id=instance.autor.id,
-            scheduled_date=instance.data_de_publicacao
-        )
-        news_scheduled.send(sender=sender, event=event)
+        if instance.data_de_publicacao > datetime.now().date():
+            event = NewsScheduledEvent(
+                news_id=instance.id,
+                timestamp=datetime.now(),
+                actor_id=instance.autor.id,
+                scheduled_date=instance.data_de_publicacao
+            )
+            news_scheduled.send(sender=sender, event=event)
+    except Exception as e:
+        print(f"Erro ao processar evento post_save: {e}")
 
 
 # Exemplo de consumer do evento de publicação

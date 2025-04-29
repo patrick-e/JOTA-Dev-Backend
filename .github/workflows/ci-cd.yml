@@ -23,10 +23,16 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
       redis:
         image: redis:6
         ports:
           - 6379:6379
+
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017
 
     steps:
     - uses: actions/checkout@v2

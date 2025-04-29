@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from ..serializers import UserCreateSerializer, UserDetailSerializer
@@ -50,6 +51,7 @@ class RefreshTokenView(TokenRefreshView):
 
 
 class RegisterView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
     """
     Endpoint para registro de novos usuários.
 
@@ -83,22 +85,22 @@ class RegisterView(generics.CreateAPIView):
             # Usa o serviço de autenticação para criar o usuário
             user, tokens = AuthService.create_user(serializer.validated_data)
 
-            # Retorna os dados do usuário e tokens se disponíveis
+            # Retorna os dados do usuário e tokens
             response_data = {
                 "user": UserDetailSerializer(user).data
             }
+            
+            # Sempre gera tokens para o novo usuário
+            if not tokens:
+                tokens = AuthService.generate_tokens(user)
+            response_data.update(tokens)
 
-            if tokens:
-                response_data.update(tokens)
-            else:
-                response_data["message"] = "Usuário registrado, mas sem autenticação automática."
-
-            return Response(response_data)
+            return Response(response_data, status=201)
 
         except ValidationError as validation_error:
             return Response({"error": str(validation_error)}, status=400)
-        except Exception:
+        except Exception as e:
             return Response(
-                {"error": "Erro ao registrar usuário. Por favor, tente novamente."},
+                {"error": str(e)},
                 status=500
             )
