@@ -16,7 +16,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:14
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -43,7 +43,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.12  # Atualizado para Django 5.2
+          python-version: 3.12
 
       # Instalação de dependências
       - name: Install dependencies
