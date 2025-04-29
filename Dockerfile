@@ -29,12 +29,27 @@ COPY . .
 # Cria diretório estático
 RUN mkdir -p JOTA/static
 
+# Cria o script de inicialização diretamente no Dockerfile
+RUN echo '#!/bin/bash\n\
+\n\
+# Espera o banco de dados estar disponível\n\
+echo "Aguardando o banco de dados..."\n\
+sleep 5\n\
+\n\
+# Aplica as migrações\n\
+echo "Aplicando migrações..."\n\
+python JOTA/manage.py migrate --noinput\n\
+\n\
+# Coleta arquivos estáticos\n\
+echo "Coletando arquivos estáticos..."\n\
+python JOTA/manage.py collectstatic --noinput\n\
+\n\
+# Executa o comando fornecido\n\
+exec "$@"' > /entrypoint.sh \
+    && chmod +x /entrypoint.sh
+
 # Expõe a porta 8000
 EXPOSE 8000
-
-# Script de inicialização
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 # Define o entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
