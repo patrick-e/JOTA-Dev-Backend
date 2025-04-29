@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'drf_yasg',
     'editor',
     'user',
-    
 ]
 
 MIDDLEWARE = [

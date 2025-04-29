@@ -16,19 +16,28 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='news',
             name='autor',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='news', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='news',
+                to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name='news',
             name='imagem',
-            field=models.ImageField(blank=True, null=True, upload_to='news_images/'),
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to='news_images/'),
         ),
         migrations.CreateModel(
             name='AuthorProfile',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nome_do_autor', models.CharField(max_length=300)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='author_profile', to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='author_profile',
+                    to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

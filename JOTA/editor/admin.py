@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import AuthorProfile, News
 from django.contrib.auth.models import User
 
+
 @admin.register(AuthorProfile)
 class AuthorProfileAdmin(admin.ModelAdmin):
     list_display = ('nome_do_autor', 'user', 'role')
@@ -19,6 +20,7 @@ class AuthorProfileAdmin(admin.ModelAdmin):
         if obj:
             return ('user',)
         return ()
+
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):

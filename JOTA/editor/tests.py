@@ -1,4 +1,3 @@
-from django.test import TestCase
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework import status
@@ -6,6 +5,7 @@ from django.urls import reverse
 from .models import News
 from user.models import ClientPlan
 from datetime import datetime, timedelta
+
 
 class NewsTests(APITestCase):
     def setUp(self):
@@ -36,7 +36,7 @@ class NewsTests(APITestCase):
         self.pro_user.author_profile.role = "Leitor"
         self.pro_user.author_profile.client_category = "PRO"
         self.pro_user.author_profile.save()
-        
+
         # Criar plano PRO com verticais
         ClientPlan.objects.create(
             user=self.pro_user,
@@ -94,18 +94,18 @@ class NewsTests(APITestCase):
             categoria="poder",
             acesso="public"
         )
-        
+
         # Simular execução da tarefa agendada
         from .views import schedule_publication
         schedule_publication()
-        
+
         # Verificar que a notícia não foi publicada (ainda não é amanhã)
         news.refresh_from_db()
         self.assertEqual(news.status, "draft")
 
     def test_editor_permissions(self):
         self.client.force_authenticate(user=self.editor_user)
-        
+
         # Editor pode editar sua própria notícia
         response = self.client.patch(
             reverse('news-update', kwargs={'pk': self.news.pk}),

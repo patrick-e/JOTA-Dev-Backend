@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from editor.models import AuthorProfile
 from .models import ClientPlan
 
+
 @receiver(post_save, sender=User)
 def create_user_profile_and_plan(sender, instance, created, **kwargs):
     """

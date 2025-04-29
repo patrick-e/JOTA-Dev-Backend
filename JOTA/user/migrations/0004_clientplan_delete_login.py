@@ -19,7 +19,10 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('allowed_verticals', models.JSONField(default=list)),
                 ('is_pro', models.BooleanField(default=False)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='client_plan', to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='client_plan',
+                    to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.DeleteModel(

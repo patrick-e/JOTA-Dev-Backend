@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
-from .models import ClientPlan
+
 
 class UserTests(APITestCase):
     def setUp(self):

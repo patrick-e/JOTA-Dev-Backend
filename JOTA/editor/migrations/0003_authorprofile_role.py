@@ -13,6 +13,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='authorprofile',
             name='role',
-            field=models.CharField(choices=[('Admin', 'Admin'), ('Editor', 'Editor'), ('Leitor', 'Leitor')], default='Leitor', max_length=10),
+            field=models.CharField(
+                choices=[('Admin', 'Admin'),
+                         ('Editor', 'Editor'),
+                         ('Leitor', 'Leitor')],
+                default='Leitor', max_length=10),
         ),
     ]

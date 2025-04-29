@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from django.dispatch import receiver
 from .events import news_published, NewsPublishedEvent
 
+
 class NewsAnalytics:
     def __init__(self):
         # Conecta ao MongoDB
@@ -48,8 +49,10 @@ class NewsAnalytics:
         """
         return self.news_metrics.find().sort('metrics.views', -1).limit(limit)
 
+
 # Instância global do analytics
 analytics = NewsAnalytics()
+
 
 # Event handlers
 @receiver(news_published)
@@ -59,6 +62,7 @@ def track_publication(sender, event: NewsPublishedEvent, **kwargs):
     """
     analytics.update_news_metrics(event.news_id, 'publications')
 
+
 def track_news_view(news_id: int, user_id: int):
     """
     Registra visualização de notícia
@@ -66,6 +70,7 @@ def track_news_view(news_id: int, user_id: int):
     """
     analytics.log_news_access(news_id, user_id, 'view')
     analytics.update_news_metrics(news_id, 'views')
+
 
 def get_news_views(news_ids: list):
     """

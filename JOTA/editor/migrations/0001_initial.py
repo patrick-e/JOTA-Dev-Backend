@@ -21,9 +21,22 @@ class Migration(migrations.Migration):
                 ('conteudo', models.TextField()),
                 ('data_de_publicacao', models.DateField()),
                 ('autor', models.CharField(max_length=100)),
-                ('status', models.CharField(choices=[('draft', 'Rascunho'), ('published', 'Publicado')], default='draft', max_length=10)),
-                ('categoria', models.CharField(choices=[('poder', 'Poder'), ('tributos', 'Tributos'), ('saude', 'Saúde'), ('energia', 'Energia'), ('trabalhista', 'Trabalhista')], default='poder', max_length=15)),
-                ('acesso', models.CharField(choices=[('public', 'Público'), ('pro', 'Restrito a PRO')], default='public', max_length=10)),
+                ('status', models.CharField(choices=[
+                    ('draft', 'Rascunho'),
+                    ('published', 'Publicado')
+                    ],
+                    default='draft', max_length=10)),
+                ('categoria', models.CharField(choices=[
+                    ('poder', 'Poder'),
+                    ('tributos', 'Tributos'),
+                    ('saude', 'Saúde'),
+                    ('energia', 'Energia'),
+                    ('trabalhista', 'Trabalhista')],
+                    default='poder', max_length=15)),
+                ('acesso', models.CharField(choices=[
+                    ('public', 'Público'),
+                    ('pro', 'Restrito a PRO')],
+                    default='public', max_length=10)),
             ],
         ),
     ]

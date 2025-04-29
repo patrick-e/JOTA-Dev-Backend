@@ -4,11 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from django_filters import rest_framework as django_filters
-from django.core.cache import cache
 from ..models import News
 from ..serializers import NewsSerializers
 from ..services import NewsService
-from user.permissions import IsAdmin, IsEditor, IsProUser, ReadOnly
+from user.permissions import IsAdmin, IsEditor, ReadOnly
+
 
 class NewsFilter(django_filters.FilterSet):
     categoria = django_filters.CharFilter(lookup_expr='iexact')
@@ -16,19 +16,20 @@ class NewsFilter(django_filters.FilterSet):
     acesso = django_filters.CharFilter(lookup_expr='iexact')
     data_inicio = django_filters.DateFilter(field_name='data_de_publicacao', lookup_expr='gte')
     data_fim = django_filters.DateFilter(field_name='data_de_publicacao', lookup_expr='lte')
-    
+
     class Meta:
         model = News
         fields = ['categoria', 'status', 'acesso', 'data_inicio', 'data_fim']
 
+
 class NewsList(generics.ListCreateAPIView):
     """
     Listagem e criação de notícias.
-    
+
     list:
     Retorna uma lista paginada de todas as notícias acessíveis ao usuário.
     Suporta filtros por categoria, status e tipo de acesso.
-    
+
     create:
     Cria uma nova notícia. Requer autenticação como Admin ou Editor.
     """
@@ -49,7 +50,7 @@ class NewsList(generics.ListCreateAPIView):
             raise ValidationError("Número de página inválido")
 
     def perform_create(self, serializer):
-        if not (IsAdmin().has_permission(self.request, self) or 
+        if not (IsAdmin().has_permission(self.request, self) or
                 IsEditor().has_permission(self.request, self)):
             raise ValidationError("Apenas administradores e editores podem criar notícias")
         try:
@@ -57,14 +58,15 @@ class NewsList(generics.ListCreateAPIView):
         except ValidationError as e:
             raise ValidationError(str(e))
 
+
 class NewsDetail(generics.RetrieveDestroyAPIView):
     """
     Recuperação e exclusão de notícias específicas.
-    
+
     retrieve:
     Retorna os detalhes de uma notícia específica.
     Registra a visualização da notícia para análise.
-    
+
     destroy:
     Exclui uma notícia. Requer autenticação como Admin ou Editor (proprietário).
     """
@@ -85,8 +87,8 @@ class NewsDetail(generics.RetrieveDestroyAPIView):
             raise ValidationError(f"Erro ao recuperar notícia: {str(e)}")
 
     def destroy(self, request, *args, **kwargs):
-        if not (IsAdmin().has_permission(request, self) or 
-                (IsEditor().has_permission(request, self) and 
+        if not (IsAdmin().has_permission(request, self) or
+                (IsEditor().has_permission(request, self) and
                  self.get_object().autor == request.user)):
             raise ValidationError("Você não tem permissão para excluir esta notícia")
         try:
@@ -95,13 +97,14 @@ class NewsDetail(generics.RetrieveDestroyAPIView):
         except Exception as e:
             raise ValidationError(f"Erro ao excluir notícia: {str(e)}")
 
+
 class NewsUpdate(generics.RetrieveUpdateAPIView):
     """
     Atualização de notícias.
-    
+
     retrieve:
     Retorna os detalhes de uma notícia para edição.
-    
+
     update:
     Atualiza uma notícia existente. Requer autenticação como Admin ou Editor (proprietário).
     Suporta atualização parcial via PATCH.
@@ -117,11 +120,11 @@ class NewsUpdate(generics.RetrieveUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        if not (IsAdmin().has_permission(request, self) or 
-                (IsEditor().has_permission(request, self) and 
+        if not (IsAdmin().has_permission(request, self) or
+                (IsEditor().has_permission(request, self) and
                  instance.autor == request.user)):
             raise ValidationError("Você não tem permissão para editar esta notícia")
-        
+
         try:
             serializer = self.get_serializer(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)

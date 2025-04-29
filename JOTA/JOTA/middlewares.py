@@ -3,6 +3,7 @@ from django.utils.deprecation import MiddlewareMixin
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.models import AnonymousUser
 
+
 class JWTAuthenticationMiddleware(MiddlewareMixin):
     """
     Middleware para autenticação via JWT.
@@ -22,7 +23,7 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
             header = request.META.get('HTTP_AUTHORIZATION', '')
             if not header.startswith('Bearer '):
                 return JsonResponse({'error': 'Token não fornecido'}, status=401)
-            
+
             validated_token = self.jwt_auth.get_validated_token(header.split(' ')[1])
             user = self.jwt_auth.get_user(validated_token)
             request.user = user

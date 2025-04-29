@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 from .models import News
 from .analytics import track_news_view
 
+
 class NewsService:
     CACHE_TTL = 60 * 15  # 15 minutos
     PAGE_SIZE = 10
@@ -17,7 +18,7 @@ class NewsService:
         """
         cache_key = f"news_list_{user.id if user.is_authenticated else 'anonymous'}_page_{page}"
         cached_result = cache.get(cache_key)
-        
+
         if cached_result:
             return cached_result
 
@@ -46,7 +47,7 @@ class NewsService:
         # Aplica paginação
         paginator = Paginator(queryset, NewsService.PAGE_SIZE)
         result = paginator.get_page(page)
-        
+
         # Armazena em cache
         cache.set(cache_key, result, NewsService.CACHE_TTL)
         return result
@@ -89,9 +90,9 @@ class NewsService:
 
         for attr, value in data.items():
             setattr(news_instance, attr, value)
-        
+
         news_instance.save()
-        
+
         # Invalida cache relacionado
         cache.delete_pattern("news_list_*")
         return news_instance
@@ -123,7 +124,7 @@ class NewsService:
             data_de_publicacao=today,
             status="draft"
         ).update(status="published")
-        
+
         if published > 0:
             cache.delete_pattern("news_list_*")
         return published

@@ -6,6 +6,7 @@ from editor.models import AuthorProfile
 from .models import ClientPlan
 import re
 
+
 class AuthService:
     @staticmethod
     def validate_password(password):
@@ -86,6 +87,7 @@ class AuthService:
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }
+
 
 class UserService:
     @staticmethod

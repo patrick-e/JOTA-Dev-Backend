@@ -177,3 +177,15 @@ python manage.py test
 - Paginação otimizada
 - Queries otimizadas
 - Monitoramento de performance via analytics
+
+## Linting do Código
+
+Este projeto utiliza o `flake8` para garantir a qualidade do código e aderência às boas práticas de estilo.
+
+### Instalação do `flake8`
+
+Certifique-se de que o `flake8` está instalado no ambiente virtual. Ele já está listado no arquivo `requirements.txt`. Para instalar:
+
+```bash
+pip install -r [requirements.txt](http://_vscodecontentref_/6)
+```

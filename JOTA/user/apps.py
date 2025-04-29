@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
+
 class UserConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'user'
@@ -8,4 +9,4 @@ class UserConfig(AppConfig):
         """
         Importa os signals quando o app é carregado
         """
-        import user.signals
+        import user.signals  # noqa: F401
