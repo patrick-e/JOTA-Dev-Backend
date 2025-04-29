@@ -13,11 +13,11 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          POSTGRES_DB: jota_test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: 1234
+          POSTGRES_USER: admin
+          POSTGRES_DB: admin
         ports:
-          - 5432:5432
+          - 5433:5432  # Atualize para usar a porta 5433
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -46,9 +46,16 @@ jobs:
       run: |
         flake8 JOTA --count --max-line-length=127 --statistics
 
+    - name: Wait for PostgreSQL
+      run: |
+        until pg_isready -h 127.0.0.1 -p 5433; do
+          echo "Waiting for PostgreSQL...";
+          sleep 5;
+        done
+
     - name: Run tests
       env:
-        DATABASE_URL: postgres://postgres:postgres@localhost:5432/jota_test
+        DATABASE_URL: postgres://admin:1234@127.0.0.1:5433/admin
         DJANGO_SETTINGS_MODULE: JOTA.settings
         SECRET_KEY: test-key
       run: |
